@@ -19,18 +19,24 @@ public class CategoryController {
     }
 
     @GetMapping("/api/v1/categories")
-    Flux<Category> getAllCategories(){
+    Flux<Category> getAllCategories() {
         return categoryRepository.findAll();
     }
 
     @GetMapping("/api/v1/categories/{id}")
-    Mono<Category> getCategoryById(@PathVariable String id){
+    Mono<Category> getCategoryById(@PathVariable String id) {
         return categoryRepository.findById(id);
     }
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    Mono<Void> createCategory(@RequestBody Publisher<Category> categoryStream){
+    Mono<Void> createCategory(@RequestBody Publisher<Category> categoryStream) {
         return categoryRepository.saveAll(categoryStream).then();
+    }
+
+    @PutMapping("/api/v1/categories/{id}")
+    Mono<Category> updateCategoryById(@PathVariable String id, @RequestBody Category category) {
+        category.setId(id);
+        return categoryRepository.save(category);
     }
 }
